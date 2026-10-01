@@ -1,3 +1,2 @@
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [];
+import {Routes} from '@angular/router';
+export const routes:Routes=[{path:'',loadComponent:()=>import('./layout/main-layout/main-layout').then(m=>m.MainLayout),children:[{path:'',pathMatch:'full',redirectTo:'inicio'},{path:'inicio',loadComponent:()=>import('./features/inicio/inicio').then(m=>m.Inicio)},{path:'categorias',loadChildren:()=>import('./features/categorias/categorias.routes').then(m=>m.CATEGORIAS_ROUTES)},{path:'clientes',loadChildren:()=>import('./features/clientes/clientes.routes').then(m=>m.CLIENTES_ROUTES)}]},{path:'**',loadComponent:()=>import('./shared/pages/no-encontrado/no-encontrado').then(m=>m.NoEncontrado)}];
