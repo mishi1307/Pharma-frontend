@@ -1,2 +1,22 @@
-export interface Cliente{id:number;dni:string;nombres:string;apellidos:string;email:string;telefono:string;direccion:string;estado:boolean;fechaCreacion?:string;fechaModificacion?:string}
-export type ClienteRequest=Omit<Cliente,'id'|'fechaCreacion'|'fechaModificacion'>;
+export interface Cliente {
+  id: number;
+  dni: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono: string | null;
+  direccion: string | null;
+  estado: boolean;
+  fechaCreacion: string;
+  fechaModificacion: string | null;
+}
+
+export interface ClienteRequest {
+  dni: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono: string | null;
+  direccion: string | null;
+  estado: boolean;
+}

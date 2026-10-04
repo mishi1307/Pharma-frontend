@@ -1,1 +1,119 @@
-<section class="heading"><div><p class="eyebrow">DIRECTORIO</p><h1>Clientes</h1><p>Consulta y administra los datos de tus clientes.</p></div><a class="button primary" routerLink="/clientes/nuevo">＋ Nuevo cliente</a></section>@if(error()){<div class="alert" role="alert">{{error()}}</div>}<section class="panel"><div class="toolbar"><div><h2>Listado de clientes</h2><small>Registros de PharmaBackend</small></div><label class="search">⌕ <input #q type="search" placeholder="Buscar DNI, nombre o correo…" [value]="filtro()" (input)="actualizarFiltro(q.value)"/></label></div>@if(cargando()){<div class="empty"><span class="spinner"></span><p>Cargando clientes…</p></div>}@else if(clientes().length===0){<div class="empty"><h3>Aún no hay clientes</h3><a class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a></div>}@else if(filtrados().length===0){<div class="empty"><h3>No hay coincidencias</h3></div>}@else{<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>DNI</th><th>Correo y teléfono</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>@for(c of filtrados();track c.id){<tr><td><strong>{{c.nombres}} {{c.apellidos}}</strong><small class="sub">ID {{c.id}}</small></td><td>{{c.dni}}</td><td>{{c.email}}<small class="sub">{{c.telefono||'Sin teléfono'}}</small></td><td><span class="badge" [class.off]="!c.estado">{{c.estado?'Activo':'Inactivo'}}</span></td><td class="actions"><a [routerLink]="['/clientes',c.id,'editar']">Editar</a><button type="button" (click)="eliminar(c)">Eliminar</button></td></tr>}</tbody></table></div><footer class="foot">Mostrando {{filtrados().length}} de {{clientes().length}} clientes</footer>}</section>
+<section class="heading">
+  <div>
+    <p class="eyebrow">DIRECTORIO</p>
+    <h1>Clientes</h1>
+    <p>Consulta y administra los datos de tus clientes.</p>
+  </div>
+  <a class="button primary" routerLink="/clientes/nuevo">＋ Nuevo cliente</a>
+</section>
+
+@if (error()) {
+  <div class="alert" role="alert">{{ error() }}</div>
+}
+
+<section class="panel">
+  <div class="toolbar">
+    <div>
+      <h2>Listado de clientes</h2>
+      <small>Registros de PharmaBackend</small>
+    </div>
+    <label class="search">
+      <span aria-hidden="true">⌕</span>
+      <input
+        #busqueda
+        type="search"
+        placeholder="Buscar por DNI, nombres o apellidos"
+        [value]="filtro()"
+        (input)="actualizarFiltro(busqueda.value)"
+      />
+    </label>
+  </div>
+
+  @if (cargando()) {
+    <div class="empty" role="status">
+      <span class="spinner"></span>
+      <p>Cargando clientes…</p>
+    </div>
+  } @else if (clientes().length === 0) {
+    <div class="empty">
+      <h3>Aún no hay clientes</h3>
+      <a class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a>
+    </div>
+  } @else if (filtrados().length === 0) {
+    <div class="empty">
+      <h3>No hay coincidencias en esta página</h3>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              [attr.aria-sort]="campoOrden() === 'dni' ? (direccion() === 'asc' ? 'ascending' : 'descending') : 'none'"
+            >
+              <button class="sort-button" type="button" (click)="ordenarPor('dni')">
+                DNI
+                @if (campoOrden() === 'dni') { <span aria-hidden="true">{{ direccion() === 'asc' ? '↑' : '↓' }}</span> }
+              </button>
+            </th>
+            <th
+              scope="col"
+              [attr.aria-sort]="campoOrden() === 'apellidos' ? (direccion() === 'asc' ? 'ascending' : 'descending') : 'none'"
+            >
+              <button class="sort-button" type="button" (click)="ordenarPor('apellidos')">
+                Apellidos y nombres
+                @if (campoOrden() === 'apellidos') { <span aria-hidden="true">{{ direccion() === 'asc' ? '↑' : '↓' }}</span> }
+              </button>
+            </th>
+            <th scope="col">Correo</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cliente of filtrados(); track cliente.id) {
+            <tr>
+              <td>{{ cliente.dni }}</td>
+              <td><strong>{{ cliente.apellidos }}, {{ cliente.nombres }}</strong></td>
+              <td>{{ cliente.email }}</td>
+              <td>{{ cliente.telefono || '—' }}</td>
+              <td>
+                <span class="badge" [class.off]="!cliente.estado">
+                  {{ cliente.estado ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="actions">
+                <a [routerLink]="['/clientes', cliente.id, 'editar']">Editar</a>
+                @if (cliente.estado) {
+                  <button type="button" (click)="eliminar(cliente)">Dar de baja</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="pagination">
+      <label>
+        Clientes por página
+        <select #tamanoPagina [value]="tamanio()" (change)="cambiarTamanio(tamanoPagina.value)">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+      </label>
+      <p>Página {{ pagina() + 1 }} de {{ totalPaginas() }} · {{ respuesta()?.totalElementos ?? 0 }} clientes</p>
+      <div class="pagination-actions">
+        <button type="button" class="button secondary" [disabled]="anteriorDeshabilitado()" (click)="cambiarPagina(-1)">
+          Anterior
+        </button>
+        <button type="button" class="button secondary" [disabled]="siguienteDeshabilitado()" (click)="cambiarPagina(1)">
+          Siguiente
+        </button>
+      </div>
+    </footer>
+  }
+</section>
