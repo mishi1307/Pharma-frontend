@@ -23,11 +23,11 @@ export class ClienteForm implements OnInit {
   protected readonly error = signal('');
   protected readonly validationErrors = signal<string[]>([]);
   protected readonly form = this.fb.group({
-    dni: ['', [Validators.required, Validators.pattern(/^\\d{8}$/)]],
+    dni: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
     nombres: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     apellidos: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
-    telefono: ['', [Validators.pattern(/^\\d{9}$/)]],
+    telefono: ['', [Validators.pattern(/^\d{9}$/)]],
     direccion: ['', [Validators.maxLength(250)]],
     estado: [true, [Validators.required]],
   });

@@ -86,9 +86,9 @@
               </td>
               <td class="actions">
                 <a [routerLink]="['/clientes', cliente.id, 'editar']">Editar</a>
-                @if (cliente.estado) {
-                  <button type="button" (click)="eliminar(cliente)">Dar de baja</button>
-                }
+                <button type="button" (click)="eliminar(cliente)">
+                  {{ cliente.estado ? 'Dar de baja' : 'Reintentar baja' }}
+                </button>
               </td>
             </tr>
           }
