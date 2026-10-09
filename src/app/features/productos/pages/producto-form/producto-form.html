@@ -1,0 +1,10 @@
+<section class="heading"><div><p class="eyebrow">CATÁLOGO</p><h1>{{ editando() ? 'Editar producto' : 'Nuevo producto' }}</h1><p>Asocia el producto a una categoría válida.</p></div><a class="button secondary" routerLink="/productos">Volver a productos</a></section>
+@if (error()) { <div class="alert" role="alert"><strong>No se pudo completar.</strong><span>{{ error() }}</span>@if (validationErrors().length) { <ul>@for (item of validationErrors(); track item) { <li>{{ item }}</li> }</ul> }</div> }
+@if (cargando()) { <section class="panel empty"><span class="spinner"></span><p>Cargando datos…</p></section> }
+@else if (!hayCategoriasActivas()) { <section class="panel empty"><h2>No hay categorías activas</h2><p>Activa o registra una categoría antes de guardar productos.</p><a class="button primary" routerLink="/categorias/nuevo">Nueva categoría</a></section> }
+@else { <form class="panel product-form" [formGroup]="form" (ngSubmit)="guardar()">
+  <label>Nombre<input formControlName="nombre" maxlength="100" />@if (form.controls.nombre.touched && form.controls.nombre.invalid) { <small>Ingresa entre 3 y 100 caracteres.</small> }</label>
+  <div class="form-grid"><label>Precio (S/)<input type="number" min="0.01" step="0.01" formControlName="precio" /></label><label>Stock<input type="number" min="0" step="1" formControlName="stock" /></label></div>
+  <label>Categoría<select formControlName="categoriaId"><option [ngValue]="null">Selecciona una categoría</option>@for (categoria of opcionesCategoria(); track categoria.id) { <option [ngValue]="categoria.id">{{ categoria.nombre }}{{ !categoria.estado ? ' (inactiva, categoría actual)' : '' }}</option> }</select></label>
+  <footer><a class="button secondary" routerLink="/productos">Cancelar</a><button class="button primary" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar producto' }}</button></footer>
+</form> }

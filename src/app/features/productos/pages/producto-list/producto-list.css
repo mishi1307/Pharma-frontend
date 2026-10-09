@@ -1,0 +1,4 @@
+.filter-note { margin: 0 24px 16px; padding: 12px 16px; border-radius: 8px; color: #174b70; background: #eaf5fb; }
+.actions { display: flex; align-items: center; gap: 12px; }
+.actions button { border: 0; padding: 0; background: transparent; color: #a52b36; font: inherit; cursor: pointer; }
+.actions button:disabled { color: #8c9299; cursor: not-allowed; }

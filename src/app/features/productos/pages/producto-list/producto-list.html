@@ -1,0 +1,32 @@
+<section class="heading">
+  <div><p class="eyebrow">CATÁLOGO</p><h1>Productos</h1><p>Administra productos y revisa su categoría.</p></div>
+  <a class="button primary" routerLink="/productos/nuevo">＋ Nuevo producto</a>
+</section>
+
+@if (error()) { <div class="alert" role="alert"><strong>No se pudo completar.</strong><span>{{ error() }}</span></div> }
+
+<section class="panel">
+  <div class="toolbar">
+    <div><h2>Listado</h2><small>Productos registrados en PharmaBackend</small></div>
+    <label class="search">Categoría
+      <select [value]="categoriaFiltro() ?? ''" (change)="cambiarCategoria($any($event.target).value)">
+        <option value="">Todas</option>
+        @for (categoria of categorias(); track categoria.id) { <option [value]="categoria.id">{{ categoria.nombre }}</option> }
+      </select>
+    </label>
+  </div>
+  @if (notaFiltro()) { <p class="filter-note">{{ notaFiltro() }}</p> }
+  @if (cargando()) { <div class="empty"><span class="spinner"></span><p>Cargando productos…</p></div> }
+  @else if (filtrados().length === 0) { <div class="empty"><h3>No hay productos para mostrar</h3></div> }
+  @else {
+    <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>@for (producto of filtrados(); track producto.id) {
+        <tr><td><strong>{{ producto.nombre }}</strong><small class="sub">ID {{ producto.id }}</small></td>
+          <td>{{ producto.categoria?.nombre ?? 'Sin categoría' }}</td><td>{{ producto.precio | currency:'PEN':'S/ ' }}</td><td>{{ producto.stock }}</td>
+          <td><span class="badge" [class.off]="!producto.estado">{{ producto.estado ? 'Activo' : 'Inactivo' }}</span></td>
+          <td class="actions"><a [routerLink]="['/productos', producto.id, 'editar']">Editar</a>
+            <button type="button" [disabled]="!producto.estado" (click)="darDeBaja(producto)">Dar de baja</button></td></tr>
+      }</tbody>
+    </table></div><footer class="foot">Mostrando {{ filtrados().length }} de {{ productos().length }} productos</footer>
+  }
+</section>
