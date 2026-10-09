@@ -1,1 +1,56 @@
-/* Estilos globales compartidos desde src/styles.css. */
+.sort-button {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.sort-button:hover {
+  color: var(--blue);
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 19px;
+  border-top: 1px solid #edf1f5;
+  color: var(--muted);
+  font-size: 11px;
+}
+.pagination label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pagination select {
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--navy);
+  background: white;
+}
+.pagination p {
+  margin: 0;
+}
+.pagination-actions {
+  display: flex;
+  gap: 8px;
+}
+.pagination-actions .button {
+  min-height: 34px;
+  font-size: 11px;
+}
+.pagination-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+@media (max-width: 760px) {
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
