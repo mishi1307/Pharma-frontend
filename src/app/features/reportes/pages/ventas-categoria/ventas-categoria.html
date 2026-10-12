@@ -1,0 +1,83 @@
+<section class="heading no-print">
+  <div>
+    <p class="eyebrow">ANÁLISIS</p>
+    <h1>Ventas por categoría</h1>
+    <p>Compara las unidades y los montos vendidos durante un periodo.</p>
+  </div>
+  <button class="button secondary" type="button" (click)="imprimir()" [disabled]="cargando()">
+    Imprimir reporte
+  </button>
+</section>
+
+@if (error()) {
+  <div class="alert" role="alert">{{ error() }}</div>
+}
+
+<section class="panel report-panel">
+  <form class="filters no-print" (ngSubmit)="generar()">
+    <label>
+      <span>Desde</span>
+      <input type="date" name="desde" [ngModel]="desde()" (ngModelChange)="desde.set($event)" />
+    </label>
+    <label>
+      <span>Hasta</span>
+      <input type="date" name="hasta" [ngModel]="hasta()" (ngModelChange)="hasta.set($event)" />
+    </label>
+    <button class="button primary" type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'Generando…' : 'Generar' }}
+    </button>
+  </form>
+
+  <p class="period-summary">
+    Periodo: {{ desde() || 'histórico' }} — {{ hasta() || 'hoy' }}
+  </p>
+
+  @if (cargando()) {
+    <div class="empty-state" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      <p>Cargando reporte…</p>
+    </div>
+  } @else if (!error() && filas().length === 0) {
+    <div class="empty-state">
+      <h2>No hay ventas en el periodo seleccionado</h2>
+      <p>Prueba otro rango de fechas o consulta el histórico completo.</p>
+    </div>
+  } @else if (!error()) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Categoría</th>
+            <th class="numeric" scope="col">Unidades vendidas</th>
+            <th class="numeric" scope="col">Monto total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of filas(); track fila.categoriaId) {
+            <tr>
+              <td><strong>{{ fila.categoriaNombre }}</strong></td>
+              <td class="numeric">{{ fila.cantidadVendida }}</td>
+              <td class="amount-cell">
+                <div class="amount-label">{{ fila.montoTotal | currency:'PEN':'S/ ':'1.2-2' }}</div>
+                <div class="bar-track" aria-hidden="true">
+                  <div class="bar-fill" [style.width.%]="porcentajeMonto(fila)"></div>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">Total general</th>
+            <th class="numeric">{{ totalUnidades() }}</th>
+            <th class="numeric">{{ montoTotal() | currency:'PEN':'S/ ':'1.2-2' }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  }
+
+  <div class="print-summary">
+    Filtros aplicados: desde {{ desde() || 'sin fecha inicial' }}, hasta {{ hasta() || 'sin fecha final' }}.
+  </div>
+</section>

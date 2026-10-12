@@ -3,13 +3,12 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PaginaResponse } from '../../../core/models/pagina-response';
-import { FiltroVentas, Venta, VentaPorCategoria, VentaRequest } from '../models/venta.model';
+import { FiltroVentas, Venta, VentaRequest } from '../models/venta.model';
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/ventas`;
-  private readonly reportesUrl = `${environment.apiUrl}/reportes`;
 
   registrar(dto: VentaRequest): Observable<Venta> {
     return this.http.post<Venta>(this.url, dto);
@@ -28,10 +27,4 @@ export class VentaService {
     return this.http.get<PaginaResponse<Venta>>(`${this.url}/buscar`, { params });
   }
 
-  ventasPorCategoria(desde: string, hasta: string): Observable<VentaPorCategoria[]> {
-    let params = new HttpParams();
-    if (desde) params = params.set('desde', desde);
-    if (hasta) params = params.set('hasta', hasta);
-    return this.http.get<VentaPorCategoria[]>(`${this.reportesUrl}/ventas-por-categoria`, { params });
-  }
 }

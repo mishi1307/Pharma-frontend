@@ -30,9 +30,3 @@ export interface FiltroVentas {
   hasta: string | null;
 }
 
-export interface VentaPorCategoria {
-  categoriaId: number;
-  categoriaNombre: string;
-  cantidadVendida: number;
-  montoTotal: number;
-}
