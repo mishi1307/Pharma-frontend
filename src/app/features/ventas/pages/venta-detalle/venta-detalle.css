@@ -1,0 +1,19 @@
+.actions { display: flex; gap: 9px; }
+.receipt { position: relative; width: 100%; max-width: none; margin: 0; padding: 34px; border: 1px solid #e1e8f0; border-radius: 16px; background: #fff; box-shadow: 0 10px 35px rgba(23,43,77,.06); }
+.receipt header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 22px; border-bottom: 2px solid #1769aa; }
+.receipt h2 { margin: 4px 0; color: #122a4b; font: 700 23px Manrope, sans-serif; }
+.receipt-id { text-align: right; font-weight: 700; color: #122a4b; }
+.receipt-id small { display: block; margin-top: 5px; color: #687b95; font-weight: 400; }
+.customer { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; padding: 22px 0; }
+.customer small, .customer strong { display: block; }
+.customer small { margin-bottom: 6px; color: #8294a8; font-size: 10px; letter-spacing: .08em; }
+.customer strong { color: #122a4b; font-size: 13px; }
+.number { text-align: right; white-space: nowrap; }
+.grand-total { display: flex; justify-content: flex-end; align-items: center; gap: 30px; margin-top: 16px; padding: 15px 0; border-top: 1px solid #dce4ec; font-weight: 700; }
+.grand-total strong { color: #08795f; font-size: 23px; }
+.receipt footer { margin-top: 30px; padding-top: 14px; border-top: 1px dashed #cbd5e1; text-align: center; color: #687b95; font-size: 11px; }
+.cancelled { position: absolute; right: 35%; top: 43%; padding: 10px 18px; border: 4px solid #b42318; color: #b42318; font-size: 26px; font-weight: 900; letter-spacing: .15em; transform: rotate(-16deg); opacity: .65; }
+.success { margin-bottom: 16px; padding: 13px; border: 1px solid #b7e5cc; border-radius: 9px; color: #13734e; background: #e8f7ef; }
+.empty { padding: 30px; text-align: center; color: #687b95; }
+@media (max-width: 600px) { .receipt { padding: 18px; } .customer { grid-template-columns: 1fr 1fr; } .customer > div:first-child { grid-column: 1 / -1; } }
+@media print { .no-print { display: none !important; } .receipt { max-width: none; margin: 0; padding: 10mm; border: 0; border-radius: 0; box-shadow: none; } .cancelled { position: fixed; } }

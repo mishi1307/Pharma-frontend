@@ -1,0 +1,10 @@
+<section class="heading no-print"><div><p class="eyebrow">COMPROBANTE</p><h1>Detalle de venta</h1><p>Venta registrada desde PharmaSoft.</p></div><div class="actions"><a class="button" routerLink="/ventas">Volver a ventas</a><button class="button primary" type="button" (click)="imprimir()">Imprimir</button></div></section>
+@if (mensaje()) { <div class="success no-print" role="status">{{ mensaje() }}</div> }
+@if (error()) { <div class="alert" role="alert">{{ error() }}</div> }
+@if (cargando()) { <div class="panel empty">Cargando comprobante…</div> }
+@if (venta(); as venta) { <article class="receipt"><header><div><p class="eyebrow">PHARMASOFT · BOTICA</p><h2>Comprobante de venta</h2></div><div class="receipt-id">N.º {{ venta.id }}<small>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</small></div></header>
+  @if (venta.estado === 'ANULADA') { <div class="cancelled">ANULADA</div> }
+  <section class="customer"><div><small>CLIENTE</small><strong>{{ venta.clienteNombre }}</strong></div><div><small>DNI</small><strong>{{ cliente()?.dni ?? '—' }}</strong></div><div><small>ESTADO</small><strong>{{ venta.estado === 'ANULADA' ? 'Anulada' : 'Registrada' }}</strong></div></section>
+  <div class="table-wrap"><table><thead><tr><th>Producto</th><th class="number">Cantidad</th><th class="number">Precio</th><th class="number">Subtotal</th></tr></thead><tbody>@for (linea of venta.detalles; track linea.productoId) { <tr><td>{{ linea.productoNombre }}</td><td class="number">{{ linea.cantidad }}</td><td class="number">{{ linea.precio | currency:'PEN':'S/ ' }}</td><td class="number">{{ linea.subtotal | currency:'PEN':'S/ ' }}</td></tr> }</tbody></table></div>
+  <div class="grand-total"><span>Total</span><strong>{{ venta.total | currency:'PEN':'S/ ' }}</strong></div><footer>Gracias por su compra · Impreso el {{ impresoEn | date:'dd/MM/yyyy HH:mm' }}</footer>
+</article> }
