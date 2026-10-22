@@ -5,7 +5,7 @@
   </div>
   <nav class="top-nav" aria-label="Menú superior"><a routerLink="/inicio">Inicio</a><a href="http://localhost:8080/swagger-ui.html" target="_blank" rel="noopener">API</a></nav>
   @if(sesion();as user){
-    <div class="account"><span class="account-name">{{user.nombreCompleto}}</span><small>{{roles()}}</small></div>
+    <div class="account"><span class="account-name">{{user.nombreCompleto}}</span><small>{{roles()}} · Vence {{user.expiraEn | date:'HH:mm'}}</small></div>
     <button class="logout" type="button" (click)="salir()">Cerrar sesión</button>
   }
 </header>

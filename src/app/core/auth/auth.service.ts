@@ -25,11 +25,15 @@ export class AuthService {
     }));
   }
 
-  cerrarSesion(redirigir = true): void {
+  cerrarSesion(motivo?: 'expirada', volverA?: string): void {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
     sessionStorage.removeItem('pharmasoft.sesion');
     this.state.set(null);
-    if (redirigir) void this.router.navigate(['/login']);
+
+    const queryParams: Record<string, string> = {};
+    if (motivo === 'expirada') queryParams['expirada'] = '1';
+    if (volverA && volverA !== '/login') queryParams['returnUrl'] = volverA;
+    void this.router.navigate(['/login'], { queryParams });
   }
 
   tienePermiso(permiso: Permiso): boolean { return this.autenticado() && !!this.state()?.permisos.includes(permiso); }
@@ -47,6 +51,6 @@ export class AuthService {
   private scheduleExpiry(): void {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
     const sesion = this.state();
-    if (sesion) this.expiryTimer = setTimeout(() => this.cerrarSesion(), Math.max(0, sesion.expiraEn - Date.now()));
+    if (sesion) this.expiryTimer = setTimeout(() => this.cerrarSesion('expirada', this.router.url), Math.max(0, sesion.expiraEn - Date.now()));
   }
 }
