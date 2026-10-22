@@ -8,7 +8,7 @@
 <section class="panel">
   <div class="toolbar">
     <div><h2>Listado</h2><small>Productos registrados en PharmaBackend</small></div>
-    <label class="search">Categoría
+    <label class="category-filter">Categoría
       <select [value]="categoriaFiltro() ?? ''" (change)="cambiarCategoria($any($event.target).value)">
         <option value="">Todas</option>
         @for (categoria of categorias(); track categoria.id) { <option [value]="categoria.id">{{ categoria.nombre }}</option> }
@@ -30,4 +30,5 @@
     </table></div><footer class="foot">Mostrando {{ filtrados().length }} de {{ productos().length }} productos</footer>
   }
 </section>
+
 
