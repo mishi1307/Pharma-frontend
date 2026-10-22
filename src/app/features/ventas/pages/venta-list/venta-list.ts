@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 import { getHttpErrorDetails } from '../../../../core/utils/http-error';
+import { SiPermisoDirective } from '../../../../shared/directives/si-permiso.directive';
 import { Cliente } from '../../../clientes/models/cliente.model';
 import { ClienteService } from '../../../clientes/services/cliente-service';
 import { EstadoVenta, Venta } from '../../models/venta.model';
 import { VentaService } from '../../services/venta-service';
 
-@Component({ selector: 'app-venta-list', imports: [CurrencyPipe, DatePipe, FormsModule, RouterLink], templateUrl: './venta-list.html', styleUrl: './venta-list.css' })
+@Component({ selector: 'app-venta-list', imports: [CurrencyPipe, DatePipe, FormsModule, RouterLink, SiPermisoDirective], templateUrl: './venta-list.html', styleUrl: './venta-list.css' })
 export class VentaList implements OnInit {
   private readonly api = inject(VentaService);
   private readonly clientesApi = inject(ClienteService);
@@ -50,3 +51,4 @@ export class VentaList implements OnInit {
   protected imprimirConsulta(): void { window.print(); }
   protected estadoVenta(value: string): EstadoVenta | null { return value ? value as EstadoVenta : null; }
 }
+

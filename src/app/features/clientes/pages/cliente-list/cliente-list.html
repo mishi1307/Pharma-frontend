@@ -4,7 +4,7 @@
     <h1>Clientes</h1>
     <p>Consulta y administra los datos de tus clientes.</p>
   </div>
-  <a class="button primary" routerLink="/clientes/nuevo">＋ Nuevo cliente</a>
+  <a *appSiPermiso="'CLIENTES_ESCRIBIR'" class="button primary" routerLink="/clientes/nuevo">＋ Nuevo cliente</a>
 </section>
 
 @if (error()) {
@@ -37,7 +37,7 @@
   } @else if (clientes().length === 0) {
     <div class="empty">
       <h3>Aún no hay clientes</h3>
-      <a class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a>
+      <a *appSiPermiso="'CLIENTES_ESCRIBIR'" class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a>
     </div>
   } @else if (filtrados().length === 0) {
     <div class="empty">
@@ -69,7 +69,7 @@
             <th scope="col">Correo</th>
             <th scope="col">Teléfono</th>
             <th scope="col">Estado</th>
-            <th scope="col">Acciones</th>
+            <th *appSiPermiso="'CLIENTES_ESCRIBIR'" scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -84,7 +84,7 @@
                   {{ cliente.estado ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="actions">
+              <td *appSiPermiso="'CLIENTES_ESCRIBIR'" class="actions">
                 <a [routerLink]="['/clientes', cliente.id, 'editar']">Editar</a>
                 <button type="button" (click)="eliminar(cliente)">
                   {{ cliente.estado ? 'Dar de baja' : 'Reintentar baja' }}
@@ -117,3 +117,5 @@
     </footer>
   }
 </section>
+
+
