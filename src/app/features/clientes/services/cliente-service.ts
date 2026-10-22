@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PaginaResponse } from '../../../core/models/pagina-response';
 import { Cliente, ClienteRequest } from '../models/cliente.model';
@@ -24,7 +24,29 @@ export class ClienteService {
       .set('ordenarPor', ordenarPor)
       .set('direccion', direccion);
 
-    return this.http.get<PaginaResponse<Cliente>>(this.url, { params });
+    return this.http.get<PaginaResponse<Cliente> | Cliente[]>(this.url, { params }).pipe(
+      map((respuesta) => {
+        if (!Array.isArray(respuesta)) return respuesta;
+
+        const clientes = [...respuesta].sort((a, b) => {
+          const valorA = a[ordenarPor];
+          const valorB = b[ordenarPor];
+          const comparacion = valorA.localeCompare(valorB, 'es', { numeric: true, sensitivity: 'base' });
+          return direccion === 'asc' ? comparacion : -comparacion;
+        });
+        const inicio = pagina * tamanio;
+        const totalPaginas = Math.ceil(clientes.length / tamanio);
+
+        return {
+          contenido: clientes.slice(inicio, inicio + tamanio),
+          pagina,
+          tamanio,
+          totalElementos: clientes.length,
+          totalPaginas,
+          ultima: pagina >= totalPaginas - 1,
+        };
+      }),
+    );
   }
 
   obtener(id: number): Observable<Cliente> {
