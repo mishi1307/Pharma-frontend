@@ -37,7 +37,7 @@
   } @else if (clientes().length === 0) {
     <div class="empty">
       <h3>Aún no hay clientes</h3>
-      <a class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a>
+      <a *appSiPermiso="'CLIENTES_ESCRIBIR'" class="button secondary" routerLink="/clientes/nuevo">Crear cliente</a>
     </div>
   } @else if (filtrados().length === 0) {
     <div class="empty">
@@ -117,4 +117,5 @@
     </footer>
   }
 </section>
+
 
