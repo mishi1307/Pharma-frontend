@@ -2,13 +2,14 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { getHttpErrorDetails } from '../../../../core/utils/http-error';
+import { SiPermisoDirective } from '../../../../shared/directives/si-permiso.directive';
 import { Categoria } from '../../../categorias/models/categoria.model';
 import { CategoriaService } from '../../../categorias/services/categoria-service';
 import { Producto } from '../../models/producto.model';
 import { ProductoService } from '../../services/producto-service';
 
 @Component({
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, SiPermisoDirective],
   selector: 'app-producto-list',
   templateUrl: './producto-list.html',
   styleUrl: './producto-list.css',
@@ -70,3 +71,4 @@ export class ProductoList implements OnInit {
     });
   }
 }
+
