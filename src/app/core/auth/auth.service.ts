@@ -3,16 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, Permiso, Sesion } from './auth.models';
+import { LoginRequest, LoginResponse, PerfilUsuario, Permiso, Sesion } from './auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private expiryTimer?: ReturnType<typeof setTimeout>;
+  private countdownTimer?: ReturnType<typeof setInterval>;
   private readonly state = signal<Sesion | null>(this.restore());
   readonly sesion = this.state.asReadonly();
+  readonly segundosRestantes = signal(0);
   readonly autenticado = computed(() => !!this.state() && this.state()!.expiraEn > Date.now());
+  readonly porVencer = computed(() => !!this.state() && this.segundosRestantes() <= 120);
 
   constructor() { this.scheduleExpiry(); }
 
@@ -25,8 +28,16 @@ export class AuthService {
     }));
   }
 
+  obtenerPerfil(): Observable<PerfilUsuario> {
+    return this.http.get<PerfilUsuario>(`${environment.apiUrl}/auth/me`);
+  }
+
   cerrarSesion(motivo?: 'expirada', volverA?: string): void {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
+    if (this.countdownTimer) clearInterval(this.countdownTimer);
+    this.expiryTimer = undefined;
+    this.countdownTimer = undefined;
+    this.segundosRestantes.set(0);
     sessionStorage.removeItem('pharmasoft.sesion');
     this.state.set(null);
 
@@ -48,9 +59,34 @@ export class AuthService {
       return sesion;
     } catch { sessionStorage.removeItem('pharmasoft.sesion'); return null; }
   }
+
   private scheduleExpiry(): void {
     if (this.expiryTimer) clearTimeout(this.expiryTimer);
+    if (this.countdownTimer) clearInterval(this.countdownTimer);
+    this.expiryTimer = undefined;
+    this.countdownTimer = undefined;
     const sesion = this.state();
-    if (sesion) this.expiryTimer = setTimeout(() => this.cerrarSesion('expirada', this.router.url), Math.max(0, sesion.expiraEn - Date.now()));
+    if (!sesion) {
+      this.segundosRestantes.set(0);
+      return;
+    }
+    this.updateCountdown();
+    this.countdownTimer = setInterval(() => this.updateCountdown(), 1000);
+    this.expiryTimer = setTimeout(
+      () => this.cerrarSesion('expirada', this.router.url),
+      Math.max(0, sesion.expiraEn - Date.now()),
+    );
+  }
+
+  private updateCountdown(): void {
+    const sesion = this.state();
+    if (!sesion) {
+      this.segundosRestantes.set(0);
+      return;
+    }
+    const restantes = Math.max(0, Math.floor((sesion.expiraEn - Date.now()) / 1000));
+    this.segundosRestantes.set(restantes);
+    if (restantes === 0) this.cerrarSesion('expirada', this.router.url);
   }
 }
+

@@ -1,0 +1,61 @@
+<main class="account-page">
+  <header class="heading">
+    <div>
+      <p class="eyebrow">CUENTA</p>
+      <h1>Mi cuenta</h1>
+      <p>Consulta los datos, roles y permisos registrados para tu usuario.</p>
+    </div>
+  </header>
+
+  @if (cargando()) {
+    <section class="card account-state" aria-live="polite"><span class="spinner" aria-hidden="true"></span><p>Cargando tu perfil…</p></section>
+  } @else if (error()) {
+    <section class="alert account-error" role="alert">
+      <strong>No se pudo cargar el perfil</strong>
+      <span>{{ error() }}</span>
+      <button class="button secondary" type="button" (click)="cargar()">Intentar de nuevo</button>
+    </section>
+  } @else if (perfil(); as user) {
+    @if (permisosDistintos()) {
+      <div class="alert permission-warning" role="alert">Sus permisos cambiaron. Cierre sesión y vuelva a ingresar para actualizarlos.</div>
+    }
+
+    <section class="card identity-card" aria-labelledby="profile-title">
+      <div class="identity-mark" aria-hidden="true">{{ user.nombreCompleto.slice(0, 1).toUpperCase() }}</div>
+      <div class="identity-copy">
+        <p class="eyebrow">PERFIL DEL SERVIDOR</p>
+        <h2 id="profile-title">{{ user.nombreCompleto }}</h2>
+        <p>Usuario: <strong>{{ user.username }}</strong></p>
+        <div class="role-list" aria-label="Roles">
+          @for (rol of user.roles; track rol) { <span class="role-badge">{{ rol }}</span> }
+        </div>
+      </div>
+    </section>
+
+    <section class="permissions-section" aria-labelledby="permissions-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">AUTORIZACIONES</p><h2 id="permissions-title">Permisos por módulo</h2></div>
+        <span class="sub">Consultados desde /api/v1/auth/me</span>
+      </div>
+      <div class="permission-grid">
+        @for (grupo of grupos; track grupo.nombre) {
+          <article class="card permission-card">
+            <h3>{{ grupo.nombre }}</h3>
+            <ul>
+              @for (permiso of grupo.permisos; track permiso.codigo) {
+                <li>
+                  <span>{{ permiso.nombre }}</span>
+                  @if (tienePermiso(user, permiso.codigo)) {
+                    <span class="permission-mark granted" aria-label="Permitido">✔</span>
+                  } @else {
+                    <span class="permission-mark denied" aria-label="No permitido">✘</span>
+                  }
+                </li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</main>
