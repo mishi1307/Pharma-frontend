@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PaginaResponse } from '../../../core/models/pagina-response';
-import { FiltroVentas, Venta, VentaPorCategoria, VentaRequest } from '../models/venta.model';
+import { FiltroVentas, ProductoMasVendido, Venta, VentaPorCategoria, VentaRequest } from '../models/venta.model';
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
@@ -28,6 +28,9 @@ export class VentaService {
     return this.http.get<PaginaResponse<Venta>>(`${this.url}/buscar`, { params });
   }
 
+  productosMasVendidos(): Observable<ProductoMasVendido[]> {
+    return this.http.get<ProductoMasVendido[]>(`${this.reportesUrl}/productos-mas-vendidos`);
+  }
   ventasPorCategoria(desde: string, hasta: string): Observable<VentaPorCategoria[]> {
     let params = new HttpParams();
     if (desde) params = params.set('desde', desde);

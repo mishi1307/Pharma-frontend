@@ -1,0 +1,71 @@
+.report-card {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid #dce5ef;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(18 42 75 / 6%);
+}
+
+.report-card header {
+  padding: 22px 26px;
+  border-bottom: 1px solid #e9eef4;
+}
+
+.report-card h2 {
+  margin: 0 0 6px;
+  color: #122a4b;
+  font: 700 20px Manrope, sans-serif;
+}
+
+.report-card header > p:last-child,
+.empty {
+  color: #687b95;
+}
+
+.report-card .eyebrow {
+  margin: 0 0 7px;
+  color: #0993ad;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 13px 18px;
+  border-bottom: 1px solid #e9eef4;
+}
+
+th {
+  background: #f8fafc;
+  color: #687b95;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+td {
+  color: #294363;
+  font-size: 13px;
+}
+
+.number {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.empty {
+  padding: 32px;
+  text-align: center;
+}
