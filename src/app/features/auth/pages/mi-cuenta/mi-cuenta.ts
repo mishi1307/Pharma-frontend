@@ -17,11 +17,15 @@ export class MiCuenta {
   protected readonly cargando = signal(true);
   protected readonly error = signal('');
   protected readonly perfil = signal<PerfilUsuario | null>(null);
+  protected readonly nombreCompleto = computed(() => {
+    const perfil = this.perfil();
+    return perfil?.nombreCompleto || perfil?.empleadoNombre || '';
+  });
   protected readonly permisosDistintos = computed(() => {
     const perfil = this.perfil();
     const permisosSesion = this.auth.sesion()?.permisos;
     if (!perfil || !permisosSesion) return false;
-    return JSON.stringify([...perfil.permisos].sort()) !== JSON.stringify([...permisosSesion].sort());
+    return JSON.stringify([...(perfil.permisos ?? [])].sort()) !== JSON.stringify([...permisosSesion].sort());
   });
   protected readonly grupos: GrupoPermisos[] = [
     { nombre: 'Catálogo', permisos: [
@@ -63,7 +67,6 @@ export class MiCuenta {
   }
 
   protected tienePermiso(perfil: PerfilUsuario, permiso: Permiso): boolean {
-    return perfil.permisos.includes(permiso);
+    return perfil.permisos?.includes(permiso) ?? false;
   }
 }
-

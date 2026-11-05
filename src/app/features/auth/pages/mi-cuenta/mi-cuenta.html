@@ -21,13 +21,13 @@
     }
 
     <section class="card identity-card" aria-labelledby="profile-title">
-      <div class="identity-mark" aria-hidden="true">{{ user.nombreCompleto.slice(0, 1).toUpperCase() }}</div>
+      <div class="identity-mark" aria-hidden="true">{{ (nombreCompleto() || user.username).slice(0, 1).toUpperCase() }}</div>
       <div class="identity-copy">
         <p class="eyebrow">PERFIL DEL SERVIDOR</p>
-        <h2 id="profile-title">{{ user.nombreCompleto }}</h2>
+        <h2 id="profile-title">{{ nombreCompleto() }}</h2>
         <p>Usuario: <strong>{{ user.username }}</strong></p>
         <div class="role-list" aria-label="Roles">
-          @for (rol of user.roles; track rol) { <span class="role-badge">{{ rol }}</span> }
+          @for (rol of user.roles ?? []; track rol) { <span class="role-badge">{{ rol }}</span> }
         </div>
       </div>
     </section>
