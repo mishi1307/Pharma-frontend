@@ -1,1 +1,42 @@
-<section class="welcome"><p class="eyebrow">PANEL PRINCIPAL</p><h1>Bienvenido a PharmaSoft</h1><p>Administra los datos de tu farmacia desde una sola aplicación.</p></section><section class="module-cards"><a class="module-card" routerLink="/categorias"><span>▦</span><div><strong>Categorías</strong><small>Organiza los productos por categoría.</small></div><b>→</b></a><a class="module-card" routerLink="/clientes"><span>♙</span><div><strong>Clientes</strong><small>Administra la cartera de clientes.</small></div><b>→</b></a></section>
+<section class="welcome">
+  <p class="eyebrow">PANEL PRINCIPAL</p>
+  <h1>Bienvenido a PharmaSoft</h1>
+  <p>Administra los datos de tu farmacia desde una sola aplicación.</p>
+</section>
+
+<section class="module-cards">
+  <a class="module-card" routerLink="/categorias">
+    <span>▦</span>
+    <div>
+      <strong>Categorías</strong>
+      <small>Organiza los productos por categoría.</small>
+    </div>
+    <b>→</b>
+  </a>
+  <a class="module-card" routerLink="/clientes">
+    <span>♙</span>
+    <div>
+      <strong>Clientes</strong>
+      <small>Administra la cartera de clientes.</small>
+    </div>
+    <b>→</b>
+  </a>
+</section>
+
+@if (auth.tienePermiso('REPORTES_VER')) {
+  @defer (on viewport) {
+    <app-mas-vendidos />
+  } @placeholder {
+    <section class="defer-placeholder" aria-live="polite">
+      <h2>Productos más vendidos</h2>
+      <p>El reporte se cargará cuando llegues a esta sección.</p>
+    </section>
+  } @loading (minimum 300ms) {
+    <section class="defer-placeholder" aria-live="polite">
+      <h2>Productos más vendidos</h2>
+      <p>Cargando reporte…</p>
+    </section>
+  } @error {
+    <p class="defer-error" role="alert">No se pudo cargar el reporte.</p>
+  }
+}
