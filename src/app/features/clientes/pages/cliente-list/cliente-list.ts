@@ -2,11 +2,12 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 import { getHttpErrorDetails } from '../../../../core/utils/http-error';
+import { SiPermisoDirective } from '../../../../shared/directives/si-permiso.directive';
 import { Cliente } from '../../models/cliente.model';
 import { CampoOrdenCliente, ClienteService } from '../../services/cliente-service';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, SiPermisoDirective],
   selector: 'app-cliente-list',
   templateUrl: './cliente-list.html',
   styleUrl: './cliente-list.css',

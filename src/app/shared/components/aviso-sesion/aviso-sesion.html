@@ -1,0 +1,8 @@
+@if (visible()) {
+  <aside class="session-warning" role="status" aria-live="polite">
+    <span class="warning-icon" aria-hidden="true">⚠</span>
+    <p>Su sesión vence en <strong>{{ cuentaRegresiva() }}</strong>.</p>
+    <button class="end-session" type="button" (click)="cerrarSesion()">Cerrar sesión ahora</button>
+    <button class="dismiss" type="button" aria-label="Ocultar aviso de expiración" (click)="ocultar()">×</button>
+  </aside>
+}
