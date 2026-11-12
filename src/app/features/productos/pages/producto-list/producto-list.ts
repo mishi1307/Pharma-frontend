@@ -20,8 +20,12 @@ import { Paginador } from '../../../../shared/components/paginador/paginador';
 export class ProductoList implements OnInit {
   readonly pagina = input(0, { transform: (valor: unknown) => numberAttribute(valor, 0) });
   readonly tamanio = input(20, { transform: (valor: unknown) => numberAttribute(valor, 20) });
-  readonly orden = input<'id' | 'nombre' | 'precio' | 'stock'>('nombre');
-  readonly dir = input<'asc' | 'desc'>('asc');
+  readonly orden = input<'id' | 'nombre' | 'precio' | 'stock', unknown>('nombre', {
+    transform: (valor) => valor === 'id' || valor === 'precio' || valor === 'stock' ? valor : 'nombre',
+  });
+  readonly dir = input<'asc' | 'desc', unknown>('asc', {
+    transform: (valor) => valor === 'desc' ? 'desc' : 'asc',
+  });
   readonly categoriaId = input<number | null, unknown>(null, { transform: (valor) => valor == null || valor === '' ? null : numberAttribute(valor) });
   private readonly productosApi = inject(ProductoService);
   private readonly categoriasApi = inject(CategoriaService);

@@ -3,7 +3,7 @@ import { iniciarSesion } from './apoyo';
 
 test('el vendedor registra una venta y el catálogo refleja el nuevo stock', async ({ page }) => {
   await iniciarSesion(page, 'vendedor', '/ventas/nueva');
-  await page.getByTestId('buscar-cliente').fill('Mamani');
+  await page.getByTestId('buscar-cliente').fill('Carlos');
   await page.getByTestId('opcion-cliente').first().click();
   await page.getByTestId('buscar-producto').fill('Paracetamol');
   const opcion = page.getByTestId('opcion-producto').first();
