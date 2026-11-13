@@ -10,14 +10,22 @@ export class ProductoService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/productos`;
 
-  listar(): Observable<Producto[]> {
+  listarPagina(
+    consulta: { pagina: number; tamanio: number; ordenarPor: OrdenProducto; direccion: 'asc' | 'desc'; categoriaId?: number | null; buscar?: string },
+  ): Observable<PaginaResponse<Producto>> {
     const params = new HttpParams()
-      .set('pagina', 0)
-      .set('tamanio', 100)
-      .set('ordenarPor', 'nombre')
-      .set('direccion', 'asc');
-    return this.http.get<Producto[] | PaginaResponse<Producto>>(this.url, { params }).pipe(
-      map((respuesta) => (Array.isArray(respuesta) ? respuesta : respuesta.contenido).slice(0, 100)),
+      .set('pagina', consulta.pagina)
+      .set('tamanio', consulta.tamanio)
+      .set('ordenarPor', consulta.ordenarPor)
+      .set('direccion', consulta.direccion);
+    const query = consulta.categoriaId == null ? params : params.set('categoriaId', consulta.categoriaId);
+    const filtros = consulta.buscar ? query.set('buscar', consulta.buscar) : query;
+    return this.http.get<PaginaResponse<Producto>>(this.url, { params: filtros });
+  }
+
+  listar(): Observable<Producto[]> {
+    return this.listarPagina({ pagina: 0, tamanio: 100, ordenarPor: 'nombre', direccion: 'asc' }).pipe(
+      map((respuesta) => respuesta.contenido),
     );
   }
 

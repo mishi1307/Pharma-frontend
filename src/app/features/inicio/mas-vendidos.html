@@ -1,0 +1,34 @@
+<section class="report-card">
+  <header>
+    <p class="eyebrow">REPORTE</p>
+    <h2>Productos más vendidos</h2>
+    <p>Unidades e importe acumulado por producto.</p>
+  </header>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th class="number">Cantidad</th>
+          <th class="number">Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (fila of filas(); track fila.productoId) {
+          <tr>
+            <td>{{ fila.productoNombre }}</td>
+            <td>{{ fila.categoriaNombre }}</td>
+            <td class="number">{{ fila.cantidadVendida }}</td>
+            <td class="number">{{ fila.montoTotal | currency:'PEN':'S/ ' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty">Aún no hay ventas registradas.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

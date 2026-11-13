@@ -7,6 +7,8 @@ export interface Producto {
   categoria: { id: number; nombre: string } | null;
   fechaCreacion: string;
   fechaModificacion: string | null;
+  creadoPor?: string | null;
+  modificadoPor?: string | null;
 }
 
 export interface ProductoRequest {

@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { debounceTime, of, startWith, switchMap } from 'rxjs';
 import { getHttpErrorDetails } from '../../../../core/utils/http-error';
 import { redondear } from '../../../../core/utils/numeros';
 import { coincide } from '../../../../core/utils/texto';
@@ -37,7 +37,16 @@ export class VentaForm implements OnInit {
   protected readonly buscarCliente = new FormControl('', { nonNullable: true });
   protected readonly buscarProducto = new FormControl('', { nonNullable: true });
   private readonly textoCliente = toSignal(this.buscarCliente.valueChanges, { initialValue: '' });
-  private readonly textoProducto = toSignal(this.buscarProducto.valueChanges, { initialValue: '' });
+  private readonly coincidenciasProducto = toSignal(
+    this.buscarProducto.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      switchMap(texto => texto.trim()
+        ? this.productosApi.listarPagina({ pagina: 0, tamanio: 20, ordenarPor: 'nombre', direccion: 'asc', buscar: texto.trim() })
+        : of(null)),
+    ),
+    { initialValue: null },
+  );
   protected readonly form = this.fb.group({
     clienteId: this.fb.control<number | null>(null, Validators.required),
     detalles: new FormArray<LineaForm>([], Validators.required),
@@ -47,8 +56,8 @@ export class VentaForm implements OnInit {
     return query ? this.clientes().filter(c => c.estado && coincide(query, c.nombres, c.apellidos, c.dni)).slice(0, 6) : [];
   });
   protected readonly productosEncontrados = computed(() => {
-    const query = this.textoProducto().trim();
-    return query ? this.productos().filter(p => p.estado && p.stock > 0 && coincide(query, p.nombre, p.categoria?.nombre ?? '')).slice(0, 6) : [];
+    const respuesta = this.coincidenciasProducto();
+    return respuesta ? respuesta.contenido.filter(p => p.estado && p.stock > 0) : [];
   });
   private readonly valor = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
   protected readonly lineas = computed(() => (this.valor().detalles ?? []).map(linea => {
@@ -65,10 +74,9 @@ export class VentaForm implements OnInit {
   protected get detalles(): FormArray<LineaForm> { return this.form.controls.detalles; }
 
   ngOnInit(): void {
-    forkJoin({ clientes: this.clientesApi.listar(0, 100), productos: this.productosApi.listar() }).subscribe({
-      next: ({ clientes, productos }) => {
+    this.clientesApi.listar(0, 100).subscribe({
+      next: (clientes) => {
         this.clientes.set(clientes.contenido.filter(c => c.estado));
-        this.productos.set(productos);
         this.cargando.set(false);
       },
       error: (error: unknown) => { this.error.set(getHttpErrorDetails(error).message); this.cargando.set(false); },
@@ -78,6 +86,7 @@ export class VentaForm implements OnInit {
   protected elegirCliente(cliente: Cliente): void { this.form.controls.clienteId.setValue(cliente.id); this.buscarCliente.setValue(''); }
   protected cambiarCliente(): void { this.form.controls.clienteId.setValue(null); }
   protected agregarProducto(producto: Producto): void {
+    this.productos.update(actuales => actuales.some(p => p.id === producto.id) ? actuales : [...actuales, producto]);
     const actual = this.detalles.controls.find(linea => linea.controls.productoId.value === producto.id);
     if (actual) actual.controls.cantidad.setValue(actual.controls.cantidad.value + 1);
     else this.detalles.push(this.fb.group({ productoId: this.fb.control(producto.id), cantidad: this.fb.control(1, [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]) }));
