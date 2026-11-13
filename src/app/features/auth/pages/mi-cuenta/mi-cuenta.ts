@@ -1,8 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { PerfilUsuario, Permiso } from '../../../../core/auth/auth.models';
+import { getHttpErrorDetails } from '../../../../core/utils/http-error';
 
 interface PermisoVista { codigo: Permiso; nombre: string; }
 interface GrupoPermisos { nombre: string; permisos: PermisoVista[]; }
@@ -57,12 +57,7 @@ export class MiCuenta {
       finalize(() => this.cargando.set(false)),
     ).subscribe({
       next: perfil => this.perfil.set(perfil),
-      error: (error: HttpErrorResponse) => {
-        const mensaje = error.error && typeof error.error === 'object' && 'message' in error.error
-          ? String(error.error.message)
-          : '';
-        this.error.set(mensaje || 'No se pudo cargar tu perfil. Inténtalo nuevamente.');
-      },
+      error: (error: unknown) => this.error.set(getHttpErrorDetails(error).message || 'No se pudo cargar tu perfil. Inténtalo nuevamente.'),
     });
   }
 

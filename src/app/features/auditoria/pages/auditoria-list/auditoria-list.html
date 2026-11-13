@@ -1,0 +1,21 @@
+<section class="heading no-print">
+  <div><p class="eyebrow">SEGURIDAD</p><h1>Auditoría</h1><p>Consulta las acciones registradas en PharmaSoft.</p></div>
+</section>
+@if (error()) { <div class="alert no-print" role="alert">{{ error() }}</div> }
+<section class="panel">
+  <div class="filters no-print">
+    <label>Usuario<input aria-label="Usuario" [ngModel]="usuario()" (ngModelChange)="usuario.set($event)" placeholder="Ej. vendedor"></label>
+    <label>Acción<select aria-label="Acción" [ngModel]="accion()" (ngModelChange)="accion.set($event)"><option value="">Todas</option><option value="VENTA_REGISTRADA">Venta registrada</option><option value="VENTA_ANULADA">Venta anulada</option><option value="PRECIO_MODIFICADO">Precio modificado</option><option value="PRODUCTO_ELIMINADO">Producto eliminado</option><option value="CLIENTE_REGISTRADO">Cliente registrado</option><option value="USUARIO_DESACTIVADO">Usuario desactivado</option><option value="CATEGORIA_ELIMINADA">Categoría eliminada</option><option value="LOGIN_FALLIDO">Inicio de sesión fallido</option><option value="LOGIN_EXITOSO">Inicio de sesión correcto</option></select></label>
+    <label>Desde<input aria-label="Desde" type="date" [ngModel]="desde()" (ngModelChange)="desde.set($event)"></label>
+    <label>Hasta<input aria-label="Hasta" type="date" [ngModel]="hasta()" (ngModelChange)="hasta.set($event)"></label>
+    <div class="filter-buttons"><button class="button primary" type="button" (click)="buscar()">Buscar</button><button class="button" type="button" (click)="limpiar()">Limpiar</button></div>
+  </div>
+  @if (cargando()) { <div class="empty"><span class="spinner"></span><p>Cargando auditoría…</p></div> }
+  @else if (!eventos().length) { <div class="empty"><h3>No hay eventos para mostrar</h3><p>Prueba con otros filtros.</p></div> }
+  @else {
+    <div class="table-wrap"><table data-testid="tabla-auditoria"><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>ID</th><th>Detalle</th><th>Request ID</th></tr></thead><tbody>
+      @for (evento of eventos(); track $index) { <tr><td>{{ evento.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</td><td>{{ evento.usuario }}</td><td><strong>{{ evento.accion }}</strong></td><td>{{ evento.entidad }}</td><td>{{ evento.entidadId ?? '—' }}</td><td>{{ evento.detalle ?? '—' }}</td><td class="request-id">{{ evento.requestId ?? '—' }}</td></tr> }
+    </tbody></table></div>
+    <footer class="foot no-print"><span>{{ totalElementos() }} evento(s)</span><app-paginador [pagina]="pagina()" [totalPaginas]="totalPaginas()" [totalElementos]="totalElementos()" [tamanio]="tamanio()" (cambioPagina)="cambiarPagina($event)" (cambioTamanio)="cambiarTamanio($event)" /></footer>
+  }
+</section>

@@ -14,6 +14,7 @@ export const routes: Routes = [
     { path: 'productos', ...read('CATALOGO_LEER'), loadChildren: () => import('./features/productos/productos.routes').then(m => m.PRODUCTOS_ROUTES) },
     { path: 'clientes', ...read('CLIENTES_LEER'), loadChildren: () => import('./features/clientes/clientes.routes').then(m => m.CLIENTES_ROUTES) },
     { path: 'ventas', ...read('VENTAS_LEER'), loadChildren: () => import('./features/ventas/ventas.routes').then(m => m.VENTAS_ROUTES) },
+    { path: 'auditoria', ...read('USUARIOS_ADMINISTRAR'), loadComponent: () => import('./features/auditoria/pages/auditoria-list/auditoria-list').then(m => m.AuditoriaList), title: 'Auditoría' },
     { path: 'reportes/ventas-categoria', ...read('REPORTES_VER'), loadComponent: () => import('./features/ventas/pages/ventas-categoria/ventas-categoria').then(m => m.VentasCategoria), title: 'Reporte de ventas por categoría' },
   ] },
   { path: '**', loadComponent: () => import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado) },
